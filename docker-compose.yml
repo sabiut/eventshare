@@ -6,7 +6,6 @@ services:
     command: python manage.py runserver 0.0.0.0:80 --nothreading --noreload
     volumes:
       - .:/code
-      - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "80:80"
     depends_on:
