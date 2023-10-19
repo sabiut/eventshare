@@ -1,0 +1,22 @@
+{% extends "upload.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Image Gallery</h2>
+    <div class="row">
+        {% for image in images %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="Uploaded Image">
+                <div class="card-body text-center">
+                    <a href="{{ image.image.url }}" download class="btn btn-primary mb-2 mr-2">Download</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode:image.image.url }}" target="_blank" class="btn btn-info mb-2 mr-2">Share on Facebook</a>
+                   
+                </div>
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

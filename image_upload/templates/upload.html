@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload for Marriage Event</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5e6e1;
+            font-family: 'Times New Roman', serif;
+        }
+        .card {
+            max-width: 600px;
+            margin: 3rem auto;
+            background-color: #fff5f3;
+            border: none;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        .card-header {
+            background-color: #d4a5a5;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .btn-primary {
+            background-color: #d4a5a5;
+            border: none;
+        }
+        .custom-file-label {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center">
+            Capture a Memory
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="custom-file mb-3">
+                    <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/*" required>
+                    <label class="custom-file-label" for="customFile">Choose or capture an image</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Upload</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies (For file input styling) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Update the file input label with the selected file name
+    $('.custom-file-input').on('change', function() { 
+        let fileName = $(this).val().split('\\').pop(); 
+        $(this).next('.custom-file-label').addClass("selected").html(fileName); 
+    });
+</script>
+{% endblock %}
+</body>
+</html>

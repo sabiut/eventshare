@@ -1,0 +1,89 @@
+Resources:
+  # S3 bucket for hosting static website
+  StaticWebsiteBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      WebsiteConfiguration:
+        IndexDocument: "index.html"
+
+
+
+  # S3 bucket for storing uploaded photos
+  PhotoBucket:
+    Type: "AWS::S3::Bucket"
+
+  # Lambda function to process photo uploads
+  PhotoProcessingLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.handler"
+      Runtime: "python3.9"
+      Code:
+        S3Bucket: "your-lambda-code-bucket"
+        S3Key: "path/to/your/lambda.zip"
+      Environment:
+        Variables:
+          PHOTO_BUCKET: !Ref PhotoBucket
+      Role: !GetAtt LambdaExecutionRole.Arn
+
+  # Role for Lambda execution
+  LambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "lambda.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "LambdaS3Access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:PutObject"
+                  - "s3:GetObject"
+                Resource: !Sub "arn:aws:s3:::${PhotoBucket}/*"
+
+  # API Gateway for triggering Lambda
+  PhotoUploadAPI:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: "PhotoUploadAPI"
+      Description: "API for uploading photos"
+      FailOnWarnings: "true"
+      EndpointConfiguration:
+        Types:
+          - "EDGE"
+
+  # API Gateway deployment
+  PhotoUploadAPIDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn: "PhotoUploadMethod"
+    Properties:
+      RestApiId: !Ref PhotoUploadAPI
+
+  # Lambda API Gateway method
+  PhotoUploadMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      AuthorizationType: "NONE"
+      RestApiId: !Ref PhotoUploadAPI
+      ResourceId: !GetAtt [PhotoUploadAPI, "RootResourceId"]
+      HttpMethod: "POST"
+      Integration:
+        IntegrationHttpMethod: "POST"
+        Type: "AWS_PROXY"
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PhotoProcessingLambda.Arn}/invocations"
+
+  # Permission for API Gateway to trigger Lambda
+  LambdaAPIGatewayInvoke:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref PhotoProcessingLambda
+      Principal: "apigateway.amazonaws.com"
+
