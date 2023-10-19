@@ -8,31 +8,42 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f5e6e1;
+            background: linear-gradient(to right, #f5e6e1, #ffd5cd);
             font-family: 'Times New Roman', serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .card {
             max-width: 600px;
             margin: 3rem auto;
             background-color: #fff5f3;
             border: none;
-            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
         }
         .card-header {
             background-color: #d4a5a5;
             color: white;
             font-size: 24px;
             font-weight: bold;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
         }
         .btn-primary {
             background-color: #d4a5a5;
             border: none;
+            border-radius: 5px;
+            font-size: 18px;
         }
         .custom-file-label {
             border-radius: 5px;
+            font-size: 16px;
+        }
+        .colleague-message {
+            font-style: italic;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -44,6 +55,9 @@
             Capture a Memory
         </div>
         <div class="card-body">
+            <div class="text-center colleague-message">
+                "Seeing two of our favourite people come together in love feels like a dream! Wishing you both a lifetime of love and happiness. Cheers to a wonderful journey ahead!"
+            </div>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="custom-file mb-3">
